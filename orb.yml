@@ -1,0 +1,35 @@
+version: 2.1
+
+description: |
+  Easily install and use Sonar on CircleCI. Sonar is a Docker utility tool
+  useful for when you want to learn more about your Docker images. You can list
+  and compare Docker images, their tags, and pull metrics from Docker Hub.
+
+  Currently supports Linux on amd64.
+
+display:
+  home_url: "https://circleci.com/developer/orbs/orb/hubci/sonar"
+  source_url: "https://github.com/hubci/sonar-orb"
+
+orbs:
+  os-detect: circleci/os-detect@0.2
+
+commands:
+  install:
+    description: |
+      Install Sonar in a build (for amd64 Linux). Installs to ~/bin.
+    parameters:
+      version:
+        description: |
+          The Sonar version. This is a full SemVer version.
+        type: string
+    steps:
+      - os-detect/init
+      - run:
+          name: "Install Sonar"
+          command: |
+            # This line and assuming this path is in PATH should move to os-detect at some point.
+            mkdir -p ~/bin
+
+            dlURL="https://github.com/felicianotech/sonar/releases/download/v<<parameters.version>>/sonar-v<<parameters.version>>-linux-amd64.tar.gz"
+            curl -sSL $dlURL | $SUDO tar -xz -C ~/bin sonar
