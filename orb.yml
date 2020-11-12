@@ -33,3 +33,120 @@ commands:
 
             dlURL="https://github.com/felicianotech/sonar/releases/download/v<<parameters.version>>/sonar-v<<parameters.version>>-linux-amd64.tar.gz"
             curl -sSL $dlURL | $SUDO tar -xz -C ~/bin sonar
+  update-readme:
+    description: |
+      Update the readme (description) of a Docker image on Docker Hub using the
+      contents of a text file. As Docker Hub readmes support Markdown, the most
+      common usecase is to use a Git repository's README.md file to update
+      Docker Hub.
+    parameters:
+      file:
+        description: The filepath to the text file to use.
+        type: string
+        default: ./README.md
+      image:
+        description: The image name whose Docker Hub readme shall be updated.
+        type: string
+      docker-username:
+        description: |
+          Environment variable (envar) that contains the Docker username. This
+          is where the variable name is specified. The envar value itself can
+          be set via project specific envars, context, the CircleCI API, and
+          more. Reference: https://circleci.com/docs/2.0/env-vars/
+        type: env_var_name
+        default: DOCKER_USER
+      docker-password:
+        description: |
+          Environment variable (envar) that contains the Docker password or API
+          token. This is where the variable name is specified. The envar value
+          itself can be set via project specific envars, context, the CircleCI
+          API, and more. Be sure not to include your password or token in plain
+          text in your config.Reference: https://circleci.com/docs/2.0/env-vars/
+        type: env_var_name
+        default: DOCKER_PASS
+    steps:
+      - run: |
+          if [ ! -f <<parameters.file>> ]; then
+            echo "The file does not exist."
+            exit 1
+          fi
+
+          sonar set readme <<parameters.image>> <<parameters.file>>
+  update-summary:
+    description: |
+      Update the summary of a Docker image on Docker Hub from a string. A
+      Docker Hub image summary is limited to 100 characters.
+    parameters:
+      summary:
+        description: The string to set as the summary. Limited to 100 characters.
+        type: string
+      image:
+        description: The image name whose Docker Hub summary shall be updated.
+        type: string
+      docker-username:
+        description: |
+          Environment variable (envar) that contains the Docker username. This
+          is where the variable name is specified. The envar value itself can
+          be set via project specific envars, context, the CircleCI API, and
+          more. Reference: https://circleci.com/docs/2.0/env-vars/
+        type: env_var_name
+        default: DOCKER_USER
+      docker-password:
+        description: |
+          Environment variable (envar) that contains the Docker password or API
+          token. This is where the variable name is specified. The envar value
+          itself can be set via project specific envars, context, the CircleCI
+          API, and more. Be sure not to include your password or token in plain
+          text in your config.Reference: https://circleci.com/docs/2.0/env-vars/
+        type: env_var_name
+        default: DOCKER_PASS
+    steps:
+      - run: sonar set summary <<parameters.image>> <<parameters.summary>>
+
+jobs:
+  update-readme:
+    docker:
+      - image: cimg/base:2020.09
+    description: |
+      Update the readme (description) of a Docker image on Docker Hub using the
+      contents of a text file. As Docker Hub readmes support Markdown, the most
+      common usecase is to use a Git repository's README.md file to update
+      Docker Hub.
+    parameters:
+      version:
+        description: |
+          The Sonar version. This is a full SemVer version.
+        type: string
+      file:
+        description: The filepath to the text file to use.
+        type: string
+        default: ./README.md
+      image:
+        description: The image name whose Docker Hub readme shall be updated.
+        type: string
+      docker-username:
+        description: |
+          Environment variable (envar) that contains the Docker username. This
+          is where the variable name is specified. The envar value itself can
+          be set via project specific envars, context, the CircleCI API, and
+          more. Reference: https://circleci.com/docs/2.0/env-vars/
+        type: env_var_name
+        default: DOCKER_USER
+      docker-password:
+        description: |
+          Environment variable (envar) that contains the Docker password or API
+          token. This is where the variable name is specified. The envar value
+          itself can be set via project specific envars, context, the CircleCI
+          API, and more. Be sure not to include your password or token in plain
+          text in your config.Reference: https://circleci.com/docs/2.0/env-vars/
+        type: env_var_name
+        default: DOCKER_PASS
+    steps:
+      - checkout
+      - install:
+          version: <<parameters.version>>
+      - update-readme:
+          file: <<parameters.file>>
+          image: <<parameters.image>>
+          docker-username: <<parameters.docker-username>>
+          docker-password: <<parameters.docker-password>>
