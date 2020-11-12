@@ -65,6 +65,14 @@ workflows:
               runner:
                 - cimg
                 - linux
+      - integration-test-update:
+          matrix:
+            parameters:
+              runner:
+                - cimg
+                - linux
+          context:
+            - staging
 
       - orb-tools/dev-promote-prod-from-commit-subject:
           orb-name: hubci/sonar
@@ -73,10 +81,12 @@ workflows:
           publish-version-tag: true
           requires:
             - integration-test-install
+            - integration-test-update
           filters:
             branches:
               only: master
-          context: orbs
+          context:
+            - orbs
 
 jobs:
   integration-test-install:
@@ -91,3 +101,16 @@ jobs:
       - run:
           name: "Try running Sonar"
           command: sonar version
+  integration-test-update:
+    parameters:
+      runner:
+        type: executor
+        default: cimg
+    executor: <<parameters.runner>>
+    steps:
+      - sonar/install:
+          version: "0.9.3"
+      - run: echo "This is sample text." > test.md
+      - sonar/update-readme:
+          image: "ftechstaging/sonar"
+          file: "./test.md"
