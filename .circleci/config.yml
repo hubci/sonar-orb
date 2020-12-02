@@ -17,7 +17,7 @@ orbs:
 executors:
   cimg:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/base:2020.12
   linux:
     machine:
       image: ubuntu-2004:202010-01
@@ -97,7 +97,7 @@ jobs:
     executor: <<parameters.runner>>
     steps:
       - sonar/install:
-          version: "0.9.3"
+          version: "0.13.0"
       - run:
           name: "Try running Sonar"
           command: sonar version
@@ -109,7 +109,7 @@ jobs:
     executor: <<parameters.runner>>
     steps:
       - sonar/install:
-          version: "0.9.3"
+          version: "0.13.0"
       - run: echo "This is sample text." > test.md
       - sonar/update-readme:
           image: "ftechstaging/sonar"
