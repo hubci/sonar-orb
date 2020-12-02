@@ -106,7 +106,7 @@ commands:
 jobs:
   update-readme:
     docker:
-      - image: cimg/base:2020.09
+      - image: cimg/base:2020.12
     description: |
       Update the readme (description) of a Docker image on Docker Hub using the
       contents of a text file. As Docker Hub readmes support Markdown, the most
