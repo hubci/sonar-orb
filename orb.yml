@@ -17,7 +17,7 @@ orbs:
 commands:
   install:
     description: |
-      Install Sonar in a build (for amd64 Linux). Installs to ~/bin.
+      Install Sonar in a build (for amd64 Linux).
     parameters:
       version:
         description: |
@@ -28,11 +28,8 @@ commands:
       - run:
           name: "Install Sonar"
           command: |
-            # This line and assuming this path is in PATH should move to os-detect at some point.
-            mkdir -p ~/bin
-
             dlURL="https://github.com/felicianotech/sonar/releases/download/v<<parameters.version>>/sonar-v<<parameters.version>>-linux-amd64.tar.gz"
-            curl -sSL $dlURL | $SUDO tar -xz -C ~/bin sonar
+            curl -sSL $dlURL | $SUDO tar -xz -C /usr/local/bin sonar
   update-readme:
     description: |
       Update the readme (description) of a Docker image on Docker Hub using the
