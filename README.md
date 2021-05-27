@@ -1,4 +1,4 @@
-# Sonar Orb [![CircleCI Build Status](https://circleci.com/gh/hubci/sonar-orb.svg?style=shield "CircleCI Build Status")](https://circleci.com/gh/hubci/sonar-orb) [![CircleCI Orb Version](https://img.shields.io/badge/endpoint.svg?url=https://badges.circleci.io/orb/hubci/sonar)][reg-page] [![GitHub License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/hubci/sonar-orb/blob/master/LICENSE)
+# Sonar Orb [![CircleCI Build Status](https://circleci.com/gh/hubci/sonar-orb.svg?style=shield "CircleCI Build Status")](https://circleci.com/gh/hubci/sonar-orb) [![CircleCI Orb Version](https://badges.circleci.com/orbs/hubci/strawberry.svg)][reg-page] [![GitHub License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://github.com/hubci/sonar-orb/blob/master/LICENSE)
 
 The Sonar Orb for CircleCI.
 This orb allows you to easily install the Docker utility Sonar in a CircleCI build.
