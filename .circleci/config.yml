@@ -1,11 +1,9 @@
 version: 2.1
 
 parameters:
-  # These pipeline parameters are required by the "trigger-integration-tests-workflow"
-  # job, by default.
   dev-orb-version:
     type: string
-    default: "dev:int-testing"
+    default: "dev:testing"
   run-integration-tests:
     type: boolean
     default: false
@@ -17,10 +15,10 @@ orbs:
 executors:
   cimg:
     docker:
-      - image: cimg/base:2020.12
+      - image: cimg/base:2021.04
   linux:
     machine:
-      image: ubuntu-2004:202010-01
+      image: ubuntu-2004:202104-01
   mac:
     macos:
       xcode: 11.7.0
@@ -30,20 +28,15 @@ workflows:
     unless: << pipeline.parameters.run-integration-tests >>
     jobs:
       - orb-tools/lint
-      # release dev version of orb, for testing & possible publishing.
-      # orb will be published as dev:alpha and dev:${CIRCLE_SHA1:0:7}.
-      # requires a CircleCI API token to be stored as CIRCLE_TOKEN (default)
       - orb-tools/publish-dev:
           orb-name: hubci/sonar
-          alpha-version-ref: "dev:int-testing"
+          alpha-version-ref: "dev:testing"
           checkout: true
           attach-workspace: false
           orb-path: orb.yml
           requires:
             - orb-tools/lint
           context: orbs
-      # trigger an integration workflow to test the
-      # dev:${CIRCLE_SHA1:0:7} version of your orb
       - orb-tools/trigger-integration-tests-workflow:
           name: trigger-integration-dev
           context: orbs
@@ -52,9 +45,6 @@ workflows:
   integration-test_deploy:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
-      # your integration test jobs go here: essentially, run all your orb's
-      # jobs and commands to ensure they behave as expected. or, run other
-      # integration tests of your choosing
       - integration-test-install:
           matrix:
             parameters:
@@ -80,7 +70,7 @@ workflows:
             - integration-test-update
           filters:
             branches:
-              only: master
+              only: trunk
           context:
             - orbs
 
@@ -93,7 +83,7 @@ jobs:
     executor: <<parameters.runner>>
     steps:
       - sonar/install:
-          version: "0.13.0"
+          version: "0.13.1"
       - run:
           name: "Try running Sonar"
           command: sonar version
@@ -105,7 +95,7 @@ jobs:
     executor: <<parameters.runner>>
     steps:
       - sonar/install:
-          version: "0.13.0"
+          version: "0.13.1"
       - run: echo "This is sample text." > test.md
       - sonar/update-readme:
           image: "ftechstaging/sonar"
